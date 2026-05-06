@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LibroMundo — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+<link rel="stylesheet" href="styles/estilos.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a class="brand-logo" href="#">
+      <div class="brand-icon">📚</div>
+      <div>
+        <div class="brand-name">LibroMundo</div>
+        <div class="brand-sub">Sistema de Gestión</div>
+      </div>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+
+    <button class="nav-item active" onclick="showView('dashboard', this)">
+      <i class="nav-icon bi bi-speedometer2"></i>
+      Dashboard
+    </button>
+
+    <button class="nav-item" onclick="showView('inventario', this)">
+      <i class="nav-icon bi bi-box-seam-fill"></i>
+      Inventario
+      <span class="nav-badge badge-warning badge">3</span>
+    </button>
+
+    <button class="nav-item" onclick="showView('ventas', this)">
+      <i class="nav-icon bi bi-receipt-cutoff"></i>
+      Ventas
+    </button>
+
+    <button class="nav-item" onclick="showView('pedidos', this)">
+      <i class="nav-icon bi bi-truck"></i>
+      Pedidos & Importación
+      <span class="nav-badge badge-danger badge">7</span>
+    </button>
+
+    <button class="nav-item" onclick="showView('clientes', this)">
+      <i class="nav-icon bi bi-people-fill"></i>
+      Clientes
+    </button>
+
+    <div class="nav-section-label">Gestión</div>
+
+    <button class="nav-item" onclick="showView('proveedores', this)">
+      <i class="nav-icon bi bi-building"></i>
+      Proveedores
+    </button>
+
+    <button class="nav-item" onclick="showView('reportes', this)">
+      <i class="nav-icon bi bi-bar-chart-fill"></i>
+      Reportes
+    </button>
+
+    <div class="nav-section-label">Sistema</div>
+
+    <button class="nav-item" onclick="showView('configuracion', this)">
+      <i class="nav-icon bi bi-gear-fill"></i>
+      Configuración
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">AM</div>
+      <div>
+        <div class="user-name">Ana Morales</div>
+        <div class="user-role">Administradora</div>
+      </div>
+      <button class="icon-btn" style="margin-left:auto;border:none;" title="Cerrar sesión" onclick="showToast('Sesión cerrada','warning','bi-box-arrow-right')">
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════ -->
+<header class="header">
+  <button class="icon-btn" id="sidebarToggle" onclick="toggleSidebar()" style="display:none">
+    <i class="bi bi-list"></i>
+  </button>
+  <span class="header-title" id="headerTitle">Dashboard</span>
+
+  <div class="search-box">
+    <i class="bi bi-search"></i>
+    <input type="text" placeholder="Buscar libros, autores, ISBN..." id="globalSearch" oninput="handleSearch(this.value)" />
+  </div>
+
+  <div class="header-actions">
+    <button class="icon-btn" title="Agregar producto" onclick="openModal('modalNuevoProducto')">
+      <i class="bi bi-plus-circle"></i>
+    </button>
+    <button class="icon-btn" title="Notificaciones" onclick="toggleNotifPanel()">
+      <i class="bi bi-bell-fill"></i>
+      <span class="notif-dot"></span>
+    </button>
+    <button class="icon-btn" title="Perfil" onclick="showToast('Perfil de usuario','info','bi-person-circle')">
+      <i class="bi bi-person-circle"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ══ VIEW: DASHBOARD ══ -->
+  <div class="view active" id="view-dashboard">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi-card c1">
+        <div class="kpi-icon c1"><i class="bi bi-currency-dollar"></i></div>
+        <div class="kpi-label">Ventas del Mes</div>
+        <div class="kpi-value">Bs 84,320</div>
+        <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> +18.4% vs mes anterior</div>
+      </div>
+      <div class="kpi-card c2">
+        <div class="kpi-icon c2"><i class="bi bi-box-seam"></i></div>
+        <div class="kpi-label">Títulos en Stock</div>
+        <div class="kpi-value">3,841</div>
+        <div class="kpi-trend down"><i class="bi bi-arrow-down-short"></i> -2.1% stock bajo</div>
+      </div>
+      <div class="kpi-card c3">
+        <div class="kpi-icon c3"><i class="bi bi-people"></i></div>
+        <div class="kpi-label">Clientes Activos</div>
+        <div class="kpi-value">1,290</div>
+        <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> +34 nuevos hoy</div>
+      </div>
+      <div class="kpi-card c4">
+        <div class="kpi-icon c4"><i class="bi bi-truck"></i></div>
+        <div class="kpi-label">Pedidos Pendientes</div>
+        <div class="kpi-value">47</div>
+        <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> 7 llegando hoy</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-row">
+      <!-- Bar chart -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Ventas Mensuales 2025</div>
+            <div class="card-subtitle">Comparativa libros vs. papelería</div>
+          </div>
+          <div class="tabs">
+            <button class="tab active" onclick="setTab(this,'chart-tabs')">Año</button>
+            <button class="tab" onclick="setTab(this,'chart-tabs')">Mes</button>
+            <button class="tab" onclick="setTab(this,'chart-tabs')">Semana</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart" id="barChart"></div>
+          <div style="display:flex;gap:16px;margin-top:8px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
+              <span style="width:12px;height:12px;border-radius:3px;background:var(--accent);display:inline-block;"></span> Libros
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
+              <span style="width:12px;height:12px;border-radius:3px;background:var(--accent4);display:inline-block;"></span> Papelería
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donut chart -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Categorías</div>
+            <div class="card-subtitle">Distribución por tipo</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <div class="donut-svg-wrap">
+              <svg width="180" height="180" viewBox="0 0 180 180">
+                <!-- Donut segments -->
+                <circle cx="90" cy="90" r="70" fill="none" stroke="var(--surface3)" stroke-width="28"/>
+                <circle cx="90" cy="90" r="70" fill="none" stroke="var(--accent)"  stroke-width="28" stroke-dasharray="175 264" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 90 90)"/>
+                <circle cx="90" cy="90" r="70" fill="none" stroke="var(--accent4)" stroke-width="28" stroke-dasharray="110 329" stroke-dashoffset="-175" stroke-linecap="round" transform="rotate(-90 90 90)"/>
+                <circle cx="90" cy="90" r="70" fill="none" stroke="var(--accent3)" stroke-width="28" stroke-dasharray="79 360"  stroke-dashoffset="-285" stroke-linecap="round" transform="rotate(-90 90 90)"/>
+                <circle cx="90" cy="90" r="70" fill="none" stroke="var(--accent5)" stroke-width="28" stroke-dasharray="75 364"  stroke-dashoffset="-364" stroke-linecap="round" transform="rotate(-90 90 90)"/>
+              </svg>
+              <div class="donut-center">
+                <div class="donut-center-val">3,841</div>
+                <div class="donut-center-lbl">Títulos</div>
+              </div>
+            </div>
+            <div class="donut-legend" style="width:100%;">
+              <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span> Novela & Literatura <span class="legend-pct">39%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--accent4)"></span> Educación <span class="legend-pct">25%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--accent3)"></span> Ciencia & Tecnología <span class="legend-pct">18%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--accent5)"></span> Arte & Diseño <span class="legend-pct">17%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="table-row cols2">
+      <!-- Últimas ventas -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Últimas Ventas</div>
+          <button class="btn btn-secondary btn-sm" onclick="showView('ventas', document.querySelector('[onclick*=ventas]'))">Ver todas</button>
+        </div>
+        <table>
+          <thead><tr><th>Producto</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+          <tbody id="ultimasVentasBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Actividad reciente -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Actividad Reciente</div>
+        </div>
+        <div class="card-body">
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent3)"></div>
+            <div>
+              <div class="activity-text"><strong>Nueva importación</strong> — 200 unidades de "El Alquimista" llegaron.</div>
+              <div class="activity-time">hace 12 min</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent)"></div>
+            <div>
+              <div class="activity-text"><strong>Venta #4821</strong> — "Cien años de soledad" x3 vendido a María G.</div>
+              <div class="activity-time">hace 38 min</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent4)"></div>
+            <div>
+              <div class="activity-text"><strong>Nuevo proveedor</strong> — Editorial Planeta registrado.</div>
+              <div class="activity-time">hace 1h</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent2)"></div>
+            <div>
+              <div class="activity-text"><strong>Stock bajo</strong> — "Harry Potter T1" tiene solo 4 unidades.</div>
+              <div class="activity-time">hace 2h</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent5)"></div>
+            <div>
+              <div class="activity-text"><strong>Cliente nuevo</strong> — Carlos Quispe registrado.</div>
+              <div class="activity-time">hace 3h</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METAS -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-head">
+        <div class="card-title">Metas del Mes</div>
+        <span style="font-size:12px;color:var(--text3);">Mayo 2025</span>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          <div>
+            <div class="progress-row">
+              <div class="progress-info"><span>Ventas de Libros</span><span>Bs 62,400 / 80,000</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:78%;background:linear-gradient(90deg,var(--accent),#e8941a)"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-info"><span>Papelería & Suministros</span><span>Bs 21,920 / 30,000</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:73%;background:linear-gradient(90deg,var(--accent4),#60a5fa)"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-info"><span>Nuevos Clientes</span><span>34 / 50</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:68%;background:linear-gradient(90deg,var(--accent3),#4ade80)"></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="progress-row">
+              <div class="progress-info"><span>Importaciones Completadas</span><span>12 / 15</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:80%;background:linear-gradient(90deg,var(--accent5),#c084fc)"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-info"><span>Inventario Organizado</span><span>3,200 / 3,841</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:83%;background:linear-gradient(90deg,var(--accent2),#fb923c)"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-info"><span>Satisfacción Clientes</span><span>4.7 / 5.0</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:94%;background:linear-gradient(90deg,#f43f5e,#fb7185)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: INVENTARIO ══ -->
+  <div class="view" id="view-inventario">
+    <div class="page-search">
+      <div class="search-box" style="width:320px;">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar por título, ISBN, autor..." id="invSearch" oninput="filterInventory(this.value)" />
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="setTab(this,'inv-tabs');filterInventoryCategory('todos')">Todos</button>
+        <button class="tab" onclick="setTab(this,'inv-tabs');filterInventoryCategory('libros')">Libros</button>
+        <button class="tab" onclick="setTab(this,'inv-tabs');filterInventoryCategory('papeleria')">Papelería</button>
+        <button class="tab" onclick="setTab(this,'inv-tabs');filterInventoryCategory('importados')">Importados</button>
+      </div>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="openModal('modalNuevoProducto')">
+        <i class="bi bi-plus-lg"></i> Nuevo Producto
+      </button>
+    </div>
+    <div class="inv-grid" id="inventoryGrid"></div>
+  </div>
+
+  <!-- ══ VIEW: VENTAS ══ -->
+  <div class="view" id="view-ventas">
+    <div class="page-search">
+      <div class="search-box" style="width:320px;">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar venta o cliente..." />
+      </div>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="openModal('modalNuevaVenta')">
+        <i class="bi bi-plus-lg"></i> Nueva Venta
+      </button>
+      <button class="btn btn-secondary" onclick="showToast('Exportando a Excel...','info','bi-file-earmark-excel')">
+        <i class="bi bi-download"></i> Exportar
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Historial de Ventas</div>
+        <div class="tabs">
+          <button class="tab active" onclick="setTab(this,'vt')">Hoy</button>
+          <button class="tab" onclick="setTab(this,'vt')">Semana</button>
+          <button class="tab" onclick="setTab(this,'vt')">Mes</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>N° Venta</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="ventasBody"></tbody>
+      </table>
+      <div style="padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Página anterior','info','bi-arrow-left')">&#8592; Anterior</button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Página siguiente','info','bi-arrow-right')">Siguiente &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: PEDIDOS ══ -->
+  <div class="view" id="view-pedidos">
+    <div class="page-search">
+      <div class="search-box" style="width:320px;">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar pedido, proveedor..." />
+      </div>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="openModal('modalNuevoPedido')">
+        <i class="bi bi-plus-lg"></i> Nuevo Pedido
+      </button>
+    </div>
+    <div class="kpi-grid" style="margin-bottom:20px;">
+      <div class="kpi-card c1">
+        <div class="kpi-icon c1"><i class="bi bi-hourglass-split"></i></div>
+        <div class="kpi-label">En tránsito</div>
+        <div class="kpi-value">12</div>
+      </div>
+      <div class="kpi-card c3">
+        <div class="kpi-icon c3"><i class="bi bi-check-circle"></i></div>
+        <div class="kpi-label">Recibidos</div>
+        <div class="kpi-value">34</div>
+      </div>
+      <div class="kpi-card c2">
+        <div class="kpi-icon c2"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="kpi-label">Con problema</div>
+        <div class="kpi-value">3</div>
+      </div>
+      <div class="kpi-card c4">
+        <div class="kpi-icon c4"><i class="bi bi-currency-dollar"></i></div>
+        <div class="kpi-label">Inversión mes</div>
+        <div class="kpi-value">$28K</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">Pedidos e Importaciones</div></div>
+      <table>
+        <thead>
+          <tr><th>Pedido</th><th>Proveedor</th><th>Origen</th><th>Títulos</th><th>Valor</th><th>ETA</th><th>Estado</th><th>Acciones</th></tr>
+        </thead>
+        <tbody id="pedidosBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: CLIENTES ══ -->
+  <div class="view" id="view-clientes">
+    <div class="page-search">
+      <div class="search-box" style="width:320px;">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar cliente..." id="clientSearch" oninput="filterClientes(this.value)"/>
+      </div>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="openModal('modalNuevoCliente')">
+        <i class="bi bi-plus-lg"></i> Nuevo Cliente
+      </button>
+      <button class="btn btn-secondary" onclick="showToast('Lista exportada','success','bi-check-circle')">
+        <i class="bi bi-download"></i> Exportar
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">Base de Clientes</div></div>
+      <table>
+        <thead><tr><th>Cliente</th><th>Email</th><th>Teléfono</th><th>Compras</th><th>Total Gastado</th><th>Último pedido</th><th>Acciones</th></tr></thead>
+        <tbody id="clientesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: PROVEEDORES ══ -->
+  <div class="view" id="view-proveedores">
+    <div class="page-search">
+      <div class="search-box" style="width:320px;">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar proveedor..."/>
+      </div>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="openModal('modalNuevoProveedor')">
+        <i class="bi bi-plus-lg"></i> Nuevo Proveedor
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">Proveedores y Distribuidoras</div></div>
+      <table>
+        <thead><tr><th>Proveedor</th><th>País</th><th>Categoría</th><th>Contacto</th><th>Pedidos</th><th>Calificación</th><th>Acciones</th></tr></thead>
+        <tbody id="proveedoresBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: REPORTES ══ -->
+  <div class="view" id="view-reportes">
+    <div class="report-grid">
+      <div class="report-card" onclick="showToast('Generando reporte de ventas...','info','bi-bar-chart')">
+        <div class="report-card-icon">📊</div>
+        <div class="report-card-name">Reporte de Ventas</div>
+        <div class="report-card-desc">Análisis completo mensual y anual</div>
+      </div>
+      <div class="report-card" onclick="showToast('Generando reporte de inventario...','info','bi-box-seam')">
+        <div class="report-card-icon">📦</div>
+        <div class="report-card-name">Inventario</div>
+        <div class="report-card-desc">Stock actual y movimientos</div>
+      </div>
+      <div class="report-card" onclick="showToast('Generando reporte financiero...','info','bi-cash-stack')">
+        <div class="report-card-icon">💰</div>
+        <div class="report-card-name">Financiero</div>
+        <div class="report-card-desc">Ingresos, costos y utilidad</div>
+      </div>
+      <div class="report-card" onclick="showToast('Generando reporte de clientes...','info','bi-people')">
+        <div class="report-card-icon">👥</div>
+        <div class="report-card-name">Clientes</div>
+        <div class="report-card-desc">Top clientes y frecuencia</div>
+      </div>
+      <div class="report-card" onclick="showToast('Generando reporte de importaciones...','info','bi-truck')">
+        <div class="report-card-icon">🚢</div>
+        <div class="report-card-name">Importaciones</div>
+        <div class="report-card-desc">Historial de pedidos internacionales</div>
+      </div>
+      <div class="report-card" onclick="showToast('Generando reporte de proveedores...','info','bi-building')">
+        <div class="report-card-icon">🏢</div>
+        <div class="report-card-name">Proveedores</div>
+        <div class="report-card-desc">Evaluación y compras por proveedor</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">Top 10 — Libros más vendidos</div></div>
+      <table>
+        <thead><tr><th>#</th><th>Título</th><th>Autor</th><th>Categoría</th><th>Unidades</th><th>Ingresos</th></tr></thead>
+        <tbody id="topLibrosBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: CONFIGURACIÓN ══ -->
+  <div class="view" id="view-configuracion">
+    <div class="settings-grid">
+      <div class="card">
+        <div class="card-head"><div class="card-title">Información de la Empresa</div></div>
+        <div class="card-body">
+          <div class="settings-section-title">Datos Generales</div>
+          <div class="form-group">
+            <label class="form-label">Nombre de la Empresa</label>
+            <input class="form-control" value="LibroMundo S.R.L." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">NIT / RUC</label>
+            <input class="form-control" value="4012345678" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dirección</label>
+            <input class="form-control" value="Av. Blanco Galindo Km 3.5, Cochabamba" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-control" value="+591 4-4520000" />
+          </div>
+          <button class="btn btn-primary" onclick="showToast('Datos guardados correctamente','success','bi-check-circle')">
+            <i class="bi bi-floppy-fill"></i> Guardar Cambios
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">Preferencias del Sistema</div></div>
+        <div class="card-body">
+          <div class="settings-section-title">Notificaciones</div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Alertas de stock bajo</div><div class="toggle-sub">Notificar cuando queden menos de 5 unidades</div></div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Nuevas ventas</div><div class="toggle-sub">Notificación en tiempo real</div></div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Pedidos de importación</div><div class="toggle-sub">Actualizaciones de estado</div></div>
+            <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Reporte semanal</div><div class="toggle-sub">Resumen los lunes por email</div></div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+          </div>
+          <div style="margin-top:20px;">
+            <div class="settings-section-title">Moneda y Región</div>
+            <div class="form-group">
+              <label class="form-label">Moneda principal</label>
+              <select class="form-control"><option>BOB — Boliviano</option><option>USD — Dólar</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Zona horaria</label>
+              <select class="form-control"><option>America/La_Paz (GMT-4)</option></select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="showToast('Preferencias guardadas','success','bi-check-circle')">
+            <i class="bi bi-floppy-fill"></i> Guardar
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">Usuarios del Sistema</div></div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>Usuario</th><th>Rol</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>Ana Morales</td><td>Administradora</td><td><span class="badge badge-success">Activo</span></td></tr>
+              <tr><td>Carlos Quispe</td><td>Vendedor</td><td><span class="badge badge-success">Activo</span></td></tr>
+              <tr><td>María Flores</td><td>Inventario</td><td><span class="badge badge-warning">Inactivo</span></td></tr>
+            </tbody>
+          </table>
+          <button class="btn btn-secondary btn-sm" style="margin-top:14px" onclick="openModal('modalNuevoUsuario')">
+            <i class="bi bi-plus-lg"></i> Agregar Usuario
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">Seguridad</div></div>
+        <div class="card-body">
+          <div class="settings-section-title">Cambiar contraseña</div>
+          <div class="form-group">
+            <label class="form-label">Contraseña actual</label>
+            <input class="form-control" type="password" placeholder="••••••••" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nueva contraseña</label>
+            <input class="form-control" type="password" placeholder="••••••••" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar nueva contraseña</label>
+            <input class="form-control" type="password" placeholder="••••••••" />
+          </div>
+          <button class="btn btn-primary" onclick="showToast('Contraseña actualizada','success','bi-shield-check')">
+            <i class="bi bi-shield-lock-fill"></i> Actualizar contraseña
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══════════════════════════════════════════
+     NOTIFICATION PANEL
+══════════════════════════════════════════ -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-head">
+    <div class="notif-title">Notificaciones</div>
+    <button class="modal-close" onclick="toggleNotifPanel()"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="notif-list">
+    <div class="notif-item unread">
+      <div class="notif-icon" style="background:rgba(232,68,26,.15);color:var(--accent2)"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <div>
+        <div class="notif-msg"><strong>Stock bajo</strong> — Harry Potter T1 solo 4 unidades.</div>
+        <div class="notif-time">hace 2 horas</div>
+      </div>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-icon" style="background:rgba(46,204,113,.15);color:var(--accent3)"><i class="bi bi-truck"></i></div>
+      <div>
+        <div class="notif-msg"><strong>Pedido #PED-0047</strong> llegó a aduana de Santa Cruz.</div>
+        <div class="notif-time">hace 3 horas</div>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon" style="background:rgba(245,166,35,.15);color:var(--accent)"><i class="bi bi-cart-fill"></i></div>
+      <div>
+        <div class="notif-msg"><strong>Nueva venta #4821</strong> — Bs 340 de María García.</div>
+        <div class="notif-time">hace 38 min</div>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon" style="background:rgba(59,130,246,.15);color:var(--accent4)"><i class="bi bi-person-plus-fill"></i></div>
+      <div>
+        <div class="notif-msg"><strong>Nuevo cliente</strong> registrado: Carlos Quispe.</div>
+        <div class="notif-time">hace 1h</div>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon" style="background:rgba(168,85,247,.15);color:var(--accent5)"><i class="bi bi-file-earmark-check"></i></div>
+      <div>
+        <div class="notif-msg"><strong>Reporte mensual</strong> de Abril listo para revisar.</div>
+        <div class="notif-time">ayer</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 22px;border-top:1px solid var(--border);">
+    <button class="btn btn-secondary" style="width:100%" onclick="showToast('Todas las notificaciones marcadas como leídas','success','bi-check-all');toggleNotifPanel()">
+      Marcar todas como leídas
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
+
+<!-- Modal: Nuevo Producto -->
+<div class="modal-overlay" id="modalNuevoProducto">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">📚 Agregar Producto</div>
+      <button class="modal-close" onclick="closeModal('modalNuevoProducto')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Título / Nombre</label>
+          <input class="form-control" placeholder="Ej: El Alquimista" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ISBN / Código</label>
+          <input class="form-control" placeholder="978-3-16-148410-0" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Autor / Marca</label>
+          <input class="form-control" placeholder="Paulo Coelho" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Categoría</label>
+          <select class="form-control">
+            <option>Novela & Literatura</option>
+            <option>Educación</option>
+            <option>Ciencia & Tecnología</option>
+            <option>Arte & Diseño</option>
+            <option>Papelería</option>
+            <option>Importado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Precio de Costo (Bs)</label>
+          <input class="form-control" type="number" placeholder="45.00" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Precio de Venta (Bs)</label>
+          <input class="form-control" type="number" placeholder="85.00" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Stock Inicial</label>
+          <input class="form-control" type="number" placeholder="50" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Proveedor</label>
+          <select class="form-control">
+            <option>Editorial Planeta</option>
+            <option>Penguin Random House</option>
+            <option>Santillana</option>
+            <option>Océano</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descripción</label>
+        <textarea class="form-control" rows="3" placeholder="Descripción breve del producto..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalNuevoProducto')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProduct()"><i class="bi bi-floppy-fill"></i> Guardar Producto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nueva Venta -->
+<div class="modal-overlay" id="modalNuevaVenta">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">🧾 Nueva Venta</div>
+      <button class="modal-close" onclick="closeModal('modalNuevaVenta')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Cliente</label>
+        <select class="form-control">
+          <option>María García</option>
+          <option>Carlos Quispe</option>
+          <option>Juan Mamani</option>
+          <option>Cliente ocasional</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Producto</label>
+          <select class="form-control">
+            <option>El Alquimista — Bs 85</option>
+            <option>Cien años de soledad — Bs 120</option>
+            <option>Harry Potter T1 — Bs 95</option>
+            <option>El Principito — Bs 60</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cantidad</label>
+          <input class="form-control" type="number" value="1" min="1" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Descuento (%)</label>
+          <input class="form-control" type="number" value="0" min="0" max="100" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Forma de pago</label>
+          <select class="form-control">
+            <option>Efectivo</option>
+            <option>Tarjeta</option>
+            <option>QR / Transferencia</option>
+            <option>Crédito</option>
+          </select>
+        </div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:8px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:6px;">
+          <span>Subtotal</span><span>Bs 85.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:8px;">
+          <span>Descuento</span><span>Bs 0.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:var(--accent);">
+          <span>TOTAL</span><span>Bs 85.00</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalNuevaVenta')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSale()"><i class="bi bi-receipt-cutoff"></i> Registrar Venta</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo Pedido -->
+<div class="modal-overlay" id="modalNuevoPedido">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">🚢 Nuevo Pedido / Importación</div>
+      <button class="modal-close" onclick="closeModal('modalNuevoPedido')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Proveedor</label>
+          <select class="form-control">
+            <option>Penguin Random House (UK)</option>
+            <option>Editorial Planeta (España)</option>
+            <option>Santillana (México)</option>
+            <option>Anagrama (España)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">País de Origen</label>
+          <select class="form-control">
+            <option>España</option>
+            <option>México</option>
+            <option>Argentina</option>
+            <option>EE.UU.</option>
+            <option>Reino Unido</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">N° de Títulos</label>
+          <input class="form-control" type="number" placeholder="50" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Valor total (USD)</label>
+          <input class="form-control" type="number" placeholder="1500.00" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Fecha de salida</label>
+          <input class="form-control" type="date" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ETA estimada</label>
+          <input class="form-control" type="date" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas del pedido</label>
+        <textarea class="form-control" rows="3" placeholder="Títulos especiales, instrucciones de aduana..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalNuevoPedido')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveOrder()"><i class="bi bi-send-fill"></i> Crear Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo Cliente -->
+<div class="modal-overlay" id="modalNuevoCliente">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">👤 Nuevo Cliente</div>
+      <button class="modal-close" onclick="closeModal('modalNuevoCliente')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre completo</label>
+          <input class="form-control" placeholder="Ana Rodríguez" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">CI / DNI</label>
+          <input class="form-control" placeholder="7654321" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-control" type="email" placeholder="ana@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono</label>
+          <input class="form-control" placeholder="+591 71234567" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo de cliente</label>
+        <select class="form-control">
+          <option>Cliente final</option>
+          <option>Institución educativa</option>
+          <option>Revendedor</option>
+          <option>Biblioteca</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalNuevoCliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveClient()"><i class="bi bi-person-plus-fill"></i> Registrar Cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo Proveedor -->
+<div class="modal-overlay" id="modalNuevoProveedor">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">🏢 Nuevo Proveedor</div>
+      <button class="modal-close" onclick="closeModal('modalNuevoProveedor')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre de la empresa</label>
+          <input class="form-control" placeholder="Editorial Planeta" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">País</label>
+          <select class="form-control">
+            <option>España</option><option>México</option><option>Argentina</option><option>EE.UU.</option><option>Bolivia</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Categoría principal</label>
+          <select class="form-control">
+            <option>Literatura</option><option>Educación</option><option>Ciencia</option><option>Arte</option><option>Papelería</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email de contacto</label>
+          <input class="form-control" type="email" placeholder="ventas@editorial.com" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Condiciones de pago</label>
+        <select class="form-control">
+          <option>Contado</option><option>30 días</option><option>60 días</option><option>Prepago</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalNuevoProveedor')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSupplier()"><i class="bi bi-building-add"></i> Registrar Proveedor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo Usuario -->
+<div class="modal-overlay" id="modalNuevoUsuario">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">🔐 Nuevo Usuario</div>
+      <button class="modal-close" onclick="closeModal('modalNuevoUsuario')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-control" placeholder="Juan Pérez" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-control" type="email" placeholder="juan@libreria.com" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Rol</label>
+          <select class="form-control">
+            <option>Vendedor</option><option>Inventario</option><option>Administrador</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña temporal</label>
+          <input class="form-control" type="password" placeholder="••••••••" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalNuevoUsuario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveUser()"><i class="bi bi-person-plus-fill"></i> Crear Usuario</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TOAST CONTAINER
+══════════════════════════════════════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────
+const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+const librosData = [
+  {icon:'📖',name:'El Alquimista',sku:'ISBN-978-8408020547',cat:'libros',price:'Bs 85',stock:42,maxStock:100},
+  {icon:'📗',name:'Cien Años de Soledad',sku:'ISBN-978-0307474728',cat:'libros',price:'Bs 120',stock:18,maxStock:50},
+  {icon:'⚗️',name:'Harry Potter T1',sku:'ISBN-978-0439708180',cat:'importados',price:'Bs 95',stock:4,maxStock:60},
+  {icon:'🌟',name:'El Principito',sku:'ISBN-978-0156012195',cat:'libros',price:'Bs 60',stock:65,maxStock:80},
+  {icon:'🧠',name:'Sapiens',sku:'ISBN-978-0062316110',cat:'importados',price:'Bs 140',stock:22,maxStock:40},
+  {icon:'🏔️',name:'La Sombra del Viento',sku:'ISBN-978-0143034902',cat:'libros',price:'Bs 110',stock:31,maxStock:50},
+  {icon:'✏️',name:'Cuadernos Universitarios',sku:'PAP-CUAD-001',cat:'papeleria',price:'Bs 25',stock:200,maxStock:300},
+  {icon:'🖊️',name:'Set Bolígrafos Premium',sku:'PAP-BOL-002',cat:'papeleria',price:'Bs 45',stock:85,maxStock:150},
+  {icon:'📐',name:'Reglas y Compases',sku:'PAP-REG-003',cat:'papeleria',price:'Bs 35',stock:60,maxStock:100},
+  {icon:'🎨',name:'Colores Profesionales',sku:'PAP-COL-004',cat:'papeleria',price:'Bs 70',stock:40,maxStock:80},
+  {icon:'🔬',name:'Física Universitaria',sku:'ISBN-978-0133969290',cat:'importados',price:'Bs 180',stock:15,maxStock:30},
+  {icon:'💻',name:'Python para Todos',sku:'ISBN-978-1491912058',cat:'importados',price:'Bs 155',stock:28,maxStock:40},
+];
+
+const ventasData = [
+  {id:'#4821',fecha:'05/05/2025',cliente:'María García',productos:'El Alquimista x3',total:'Bs 255',estado:'completado'},
+  {id:'#4820',fecha:'05/05/2025',cliente:'Carlos Quispe',productos:'Harry Potter T1',total:'Bs 95',estado:'completado'},
+  {id:'#4819',fecha:'04/05/2025',cliente:'Inst. San Simón',productos:'Cuadernos x50',total:'Bs 1,250',estado:'pendiente'},
+  {id:'#4818',fecha:'04/05/2025',cliente:'Juan Mamani',productos:'Sapiens + Física',total:'Bs 320',estado:'completado'},
+  {id:'#4817',fecha:'03/05/2025',cliente:'Ana López',productos:'El Principito x2',total:'Bs 120',estado:'devuelto'},
+  {id:'#4816',fecha:'03/05/2025',cliente:'Biblioteca Mun.',productos:'Varios x20',total:'Bs 2,200',estado:'pendiente'},
+  {id:'#4815',fecha:'02/05/2025',cliente:'Pedro Soria',productos:'Colores + Reglas',total:'Bs 105',estado:'completado'},
+];
+
+const pedidosData = [
+  {id:'PED-0047',proveedor:'Penguin Random House',origen:'🇬🇧 UK',titulos:120,valor:'$2,400',eta:'12 May',estado:'transito'},
+  {id:'PED-0046',proveedor:'Editorial Planeta',origen:'🇪🇸 España',titulos:80,valor:'$1,600',eta:'08 May',estado:'aduana'},
+  {id:'PED-0045',proveedor:'Santillana',origen:'🇲🇽 México',titulos:200,valor:'$3,200',eta:'20 May',estado:'confirmado'},
+  {id:'PED-0044',proveedor:'Anagrama',origen:'🇪🇸 España',titulos:50,valor:'$980',eta:'02 May',estado:'recibido'},
+  {id:'PED-0043',proveedor:'Océano',origen:'🇲🇽 México',titulos:35,valor:'$620',eta:'28 Abr',estado:'recibido'},
+  {id:'PED-0042',proveedor:'Fondo de Cultura',origen:'🇲🇽 México',titulos:90,valor:'$1,450',eta:'01 May',estado:'problema'},
+];
+
+const clientesData = [
+  {nombre:'María García',email:'maria@gmail.com',tel:'+591 71234567',compras:24,total:'Bs 3,200',ultimo:'05/05/2025'},
+  {nombre:'Carlos Quispe',email:'carlos@gmail.com',tel:'+591 78901234',compras:15,total:'Bs 1,850',ultimo:'05/05/2025'},
+  {nombre:'Inst. San Simón',email:'compras@umss.edu',tel:'+591 4-4511111',compras:48,total:'Bs 28,400',ultimo:'04/05/2025'},
+  {nombre:'Juan Mamani',email:'juan@gmail.com',tel:'+591 76543210',compras:9,total:'Bs 980',ultimo:'04/05/2025'},
+  {nombre:'Biblioteca Municipal',email:'biblio@cbba.gob.bo',tel:'+591 4-4561234',compras:72,total:'Bs 56,800',ultimo:'03/05/2025'},
+  {nombre:'Pedro Soria',email:'pedro@gmail.com',tel:'+591 72109876',compras:5,total:'Bs 420',ultimo:'02/05/2025'},
+];
+
+const proveedoresData = [
+  {nombre:'Penguin Random House',pais:'🇬🇧 Reino Unido',cat:'Literatura',contacto:'uk@penguin.com',pedidos:18,rating:5},
+  {nombre:'Editorial Planeta',pais:'🇪🇸 España',cat:'Literatura & Edu.',contacto:'export@planeta.es',pedidos:24,rating:5},
+  {nombre:'Santillana',pais:'🇲🇽 México',cat:'Educación',contacto:'ventas@santillana.mx',pedidos:12,rating:4},
+  {nombre:'Anagrama',pais:'🇪🇸 España',cat:'Literatura',contacto:'info@anagrama.com',pedidos:8,rating:4},
+  {nombre:'Océano',pais:'🇲🇽 México',cat:'Educación & Ref.',contacto:'export@oceano.mx',pedidos:6,rating:3},
+  {nombre:'Fondo de Cultura',pais:'🇲🇽 México',cat:'Académico',contacto:'fce@fondodecult.mx',pedidos:10,rating:4},
+];
+
+const topLibros = [
+  {titulo:'El Alquimista',autor:'Paulo Coelho',cat:'Novela',unidades:148,ingresos:'Bs 12,580'},
+  {titulo:'Cien Años de Soledad',autor:'G. García Márquez',cat:'Novela',unidades:112,ingresos:'Bs 13,440'},
+  {titulo:'Harry Potter T1',autor:'J.K. Rowling',cat:'Fantasía',unidades:98,ingresos:'Bs 9,310'},
+  {titulo:'Sapiens',autor:'Yuval Noah Harari',cat:'Historia',unidades:85,ingresos:'Bs 11,900'},
+  {titulo:'El Principito',autor:'Antoine de Saint-Exupéry',cat:'Clásico',unidades:76,ingresos:'Bs 4,560'},
+  {titulo:'Física Universitaria',autor:'Sears & Zemansky',cat:'Educación',unidades:64,ingresos:'Bs 11,520'},
+  {titulo:'La Sombra del Viento',autor:'Carlos Ruiz Zafón',cat:'Novela',unidades:58,ingresos:'Bs 6,380'},
+  {titulo:'Python para Todos',autor:'Severance',cat:'Tecnología',unidades:54,ingresos:'Bs 8,370'},
+  {titulo:'Cuadernos Univ.',autor:'Varias marcas',cat:'Papelería',unidades:421,ingresos:'Bs 10,525'},
+  {titulo:'Set Bolígrafos',autor:'Varias marcas',cat:'Papelería',unidades:312,ingresos:'Bs 14,040'},
+];
+
+// ─── RENDER ─────────────────────────────────────────────────────────
+
+function renderBarChart() {
+  const salesBooks = [28000,34000,29000,42000,38000,51000,46000,52000,48000,55000,49000,62000];
+  const salesPap   = [12000,14000,11000,15000,18000,16000,19000,22000,20000,25000,23000,27000];
+  const max = Math.max(...salesBooks, ...salesPap);
+  const chart = document.getElementById('barChart');
+  chart.innerHTML = meses.map((m,i) => {
+    const hB = Math.round((salesBooks[i]/max)*140);
+    const hP = Math.round((salesPap[i]/max)*140);
+    return `
+      <div class="bar-wrap">
+        <div style="display:flex;gap:3px;align-items:flex-end;">
+          <div class="bar" style="height:${hB}px;width:14px;background:var(--accent);animation-delay:${i*0.05}s">
+            <div class="bar-tooltip">Bs ${(salesBooks[i]/1000).toFixed(0)}K</div>
+          </div>
+          <div class="bar" style="height:${hP}px;width:14px;background:var(--accent4);animation-delay:${i*0.05+0.03}s">
+            <div class="bar-tooltip">Bs ${(salesPap[i]/1000).toFixed(0)}K</div>
+          </div>
+        </div>
+        <span class="bar-label">${m}</span>
+      </div>`;
+  }).join('');
+}
+
+function renderUltimasVentas() {
+  const body = document.getElementById('ultimasVentasBody');
+  const estadoMap = {completado:'badge-success',pendiente:'badge-warning',devuelto:'badge-danger'};
+  body.innerHTML = ventasData.slice(0,5).map(v => `
+    <tr onclick="showToast('Venta ${v.id} seleccionada','info','bi-receipt')">
+      <td>${v.id}</td>
+      <td style="color:var(--text3);font-size:12px">${v.cliente}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent);font-size:13px">${v.total}</td>
+      <td><span class="badge ${estadoMap[v.estado]}">${v.estado.charAt(0).toUpperCase()+v.estado.slice(1)}</span></td>
+    </tr>`).join('');
+}
+
+function renderInventory(filter='',cat='todos') {
+  const grid = document.getElementById('inventoryGrid');
+  const filtered = librosData.filter(l =>
+    (cat==='todos' || l.cat===cat) &&
+    (l.name.toLowerCase().includes(filter.toLowerCase()) || l.sku.toLowerCase().includes(filter.toLowerCase()))
+  );
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🔍</div><div class="empty-state-text">No se encontraron productos</div></div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(l => {
+    const pct = Math.round((l.stock/l.maxStock)*100);
+    const color = pct > 50 ? 'var(--accent3)' : pct > 20 ? 'var(--accent)' : 'var(--accent2)';
+    return `
+      <div class="inv-card" onclick="showToast('${l.name} — ${l.stock} unidades en stock','info','bi-box-seam')">
+        <span class="inv-card-icon">${l.icon}</span>
+        <div class="inv-card-name">${l.name}</div>
+        <div class="inv-card-sku">${l.sku}</div>
+        <div class="inv-card-price">${l.price}</div>
+        <div class="inv-card-stock">Stock: ${l.stock} / ${l.maxStock}</div>
+        <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>`;
+  }).join('');
+}
+
+let currentInvCat = 'todos';
+function filterInventory(v) { renderInventory(v, currentInvCat); }
+function filterInventoryCategory(c) { currentInvCat=c; renderInventory(document.getElementById('invSearch')?.value||'',c); }
+
+function renderVentas() {
+  const estadoMap = {completado:'badge-success',pendiente:'badge-warning',devuelto:'badge-danger'};
+  document.getElementById('ventasBody').innerHTML = ventasData.map(v => `
+    <tr>
+      <td>${v.id}</td>
+      <td style="color:var(--text3);font-size:12px">${v.fecha}</td>
+      <td>${v.cliente}</td>
+      <td style="font-size:12px;color:var(--text3)">${v.productos}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent)">${v.total}</td>
+      <td><span class="badge ${estadoMap[v.estado]}">${v.estado.charAt(0).toUpperCase()+v.estado.slice(1)}</span></td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Venta ${v.id} — detalle','info','bi-eye')"><i class="bi bi-eye"></i></button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Imprimiendo factura ${v.id}','info','bi-printer')"><i class="bi bi-printer"></i></button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderPedidos() {
+  const estadoMap = {transito:'badge-info',aduana:'badge-warning',confirmado:'badge-success',recibido:'badge-success',problema:'badge-danger'};
+  const estadoLabel = {transito:'En tránsito',aduana:'En aduana',confirmado:'Confirmado',recibido:'Recibido',problema:'Problema'};
+  document.getElementById('pedidosBody').innerHTML = pedidosData.map(p => `
+    <tr>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent4)">${p.id}</td>
+      <td>${p.proveedor}</td>
+      <td style="font-size:13px">${p.origen}</td>
+      <td style="color:var(--text3)">${p.titulos}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent)">${p.valor}</td>
+      <td style="font-size:12px;color:var(--text3)">${p.eta}</td>
+      <td><span class="badge ${estadoMap[p.estado]}">${estadoLabel[p.estado]}</span></td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Detalle pedido ${p.id}','info','bi-eye')"><i class="bi bi-eye"></i></button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Estado actualizado','success','bi-arrow-repeat')"><i class="bi bi-arrow-repeat"></i></button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderClientes(filter='') {
+  const filtered = clientesData.filter(c => c.nombre.toLowerCase().includes(filter.toLowerCase()) || c.email.toLowerCase().includes(filter.toLowerCase()));
+  document.getElementById('clientesBody').innerHTML = filtered.map(c => `
+    <tr>
+      <td><div style="font-weight:600;color:var(--text)">${c.nombre}</div></td>
+      <td style="color:var(--text3);font-size:12px">${c.email}</td>
+      <td style="font-size:12px;color:var(--text3)">${c.tel}</td>
+      <td style="color:var(--text2)">${c.compras}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent)">${c.total}</td>
+      <td style="font-size:12px;color:var(--text3)">${c.ultimo}</td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Perfil de ${c.nombre}','info','bi-person')"><i class="bi bi-eye"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="showToast('${c.nombre} eliminado (demo)','warning','bi-trash')"><i class="bi bi-trash"></i></button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterClientes(v) { renderClientes(v); }
+
+function renderProveedores() {
+  const stars = n => '⭐'.repeat(n) + '☆'.repeat(5-n);
+  document.getElementById('proveedoresBody').innerHTML = proveedoresData.map(p => `
+    <tr>
+      <td style="font-weight:600;color:var(--text)">${p.nombre}</td>
+      <td>${p.pais}</td>
+      <td style="color:var(--text3);font-size:12px">${p.cat}</td>
+      <td style="color:var(--text3);font-size:12px">${p.contacto}</td>
+      <td style="color:var(--text2)">${p.pedidos}</td>
+      <td style="font-size:13px">${stars(p.rating)}</td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Historial de ${p.nombre}','info','bi-eye')"><i class="bi bi-eye"></i></button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('modalNuevoPedido')"><i class="bi bi-truck"></i> Pedir</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderTopLibros() {
+  document.getElementById('topLibrosBody').innerHTML = topLibros.map((l,i) => `
+    <tr>
+      <td style="color:${i<3?'var(--accent)':'var(--text3)'};font-weight:700">${i+1}</td>
+      <td style="color:var(--text);font-weight:500">${l.titulo}</td>
+      <td style="color:var(--text3);font-size:12px">${l.autor}</td>
+      <td><span class="badge badge-info">${l.cat}</span></td>
+      <td style="font-family:'DM Mono',monospace">${l.unidades}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent)">${l.ingresos}</td>
+    </tr>`).join('');
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────
+
+const viewTitles = {
+  dashboard: 'Dashboard',
+  inventario: 'Inventario',
+  ventas: 'Ventas',
+  pedidos: 'Pedidos & Importación',
+  clientes: 'Clientes',
+  proveedores: 'Proveedores',
+  reportes: 'Reportes',
+  configuracion: 'Configuración',
+};
+
+function showView(id, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('headerTitle').textContent = viewTitles[id] || id;
+  // Close notif panel on mobile
+  document.getElementById('notifPanel').classList.remove('open');
+}
+
+// ─── MODALS ─────────────────────────────────────────────────────────
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// ─── TOAST ──────────────────────────────────────────────────────────
+
+function showToast(msg, type='success', icon='bi-check-circle') {
+  const colors = {success:'var(--accent3)',warning:'var(--accent)',info:'var(--accent4)',danger:'var(--accent2)'};
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <i class="bi ${icon} toast-icon" style="color:${colors[type]||colors.info}"></i>
+    <span class="toast-text">${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(toast);
+  requestAnimationFrame(() => { requestAnimationFrame(() => { toast.classList.add('show'); }); });
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
+}
+
+// ─── NOTIF PANEL ────────────────────────────────────────────────────
+
+function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('open'); }
+
+// ─── TABS ───────────────────────────────────────────────────────────
+
+function setTab(el, group) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── MODAL SAVE ACTIONS ─────────────────────────────────────────────
+
+function saveProduct() {
+  closeModal('modalNuevoProducto');
+  showToast('Producto agregado al inventario','success','bi-box-seam-fill');
+}
+function saveSale() {
+  closeModal('modalNuevaVenta');
+  showToast('Venta registrada exitosamente','success','bi-receipt-cutoff');
+}
+function saveOrder() {
+  closeModal('modalNuevoPedido');
+  showToast('Pedido de importación creado','success','bi-truck');
+}
+function saveClient() {
+  closeModal('modalNuevoCliente');
+  showToast('Cliente registrado correctamente','success','bi-person-plus-fill');
+}
+function saveSupplier() {
+  closeModal('modalNuevoProveedor');
+  showToast('Proveedor registrado','success','bi-building-check');
+}
+function saveUser() {
+  closeModal('modalNuevoUsuario');
+  showToast('Usuario creado exitosamente','success','bi-shield-check');
+}
+
+// ─── GLOBAL SEARCH ──────────────────────────────────────────────────
+
+function handleSearch(val) {
+  if (val.length > 2) {
+    showToast(`Buscando: "${val}"...`, 'info', 'bi-search');
+  }
+}
+
+// ─── SIDEBAR TOGGLE ─────────────────────────────────────────────────
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ─── RESPONSIVE ─────────────────────────────────────────────────────
+
+function checkResponsive() {
+  const toggle = document.getElementById('sidebarToggle');
+  if (window.innerWidth <= 800) {
+    toggle.style.display = 'grid';
+  } else {
+    toggle.style.display = 'none';
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+window.addEventListener('resize', checkResponsive);
+checkResponsive();
+
+// ─── INIT ────────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderBarChart();
+  renderUltimasVentas();
+  renderInventory();
+  renderVentas();
+  renderPedidos();
+  renderClientes();
+  renderProveedores();
+  renderTopLibros();
+
+  // Welcome toast
+  setTimeout(() => showToast('Bienvenida, Ana 👋 Todo en orden hoy','success','bi-stars'), 800);
+});
+</script>
+</body>
+</html>
